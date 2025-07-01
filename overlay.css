@@ -1,0 +1,773 @@
+/**
+ * Matomo Tag Manager Event Monitor - Overlay Styles
+ * Main stylesheet for the MTM event monitoring overlay UI
+ *
+ * @description Comprehensive styling for the extension overlay including event display,
+ *              trigger analysis, configuration panel, and responsive design
+ * @version 1.3
+ * @author MTM Event Monitor
+ */
+
+/* =============================================================================
+   MAIN OVERLAY CONTAINER
+   ============================================================================= */
+
+#matomo-event-overlay {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 450px;
+    height: 500px;
+    background: white;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    z-index: 2147483647;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11px;
+    display: none;
+    overflow: hidden;
+}
+
+/* =============================================================================
+   HEADER SECTION
+   ============================================================================= */
+
+.matomo-overlay-header {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+}
+
+.matomo-overlay-header h3 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.matomo-overlay-controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.matomo-overlay-controls button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 4px 6px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: background-color 0.2s;
+}
+
+.matomo-overlay-controls button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* =============================================================================
+   CONTENT SECTION
+   ============================================================================= */
+
+.matomo-overlay-content {
+    height: calc(100% - 44px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#matomo-event-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    background: #f8f9fa;
+}
+
+/* =============================================================================
+   EVENT ITEMS
+   ============================================================================= */
+
+.matomo-event-item {
+    background: white;
+    border-bottom: 1px solid #dee2e6;
+    padding: 8px 12px;
+    transition: background-color 0.2s;
+}
+
+.matomo-event-item:hover {
+    background: #f8f9fa;
+}
+
+.matomo-event-item.historical {
+    background: #fff9e6;
+    border-left: 3px solid #ffc107;
+}
+
+.matomo-event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+}
+
+.matomo-event-name {
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    font-size: 11px;
+    min-width: 0;
+}
+
+.matomo-event-number {
+    background: #e74c3c;
+    color: white;
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: bold;
+    min-width: 16px;
+    text-align: center;
+}
+
+.matomo-event-number.historical {
+    background: #ffc107;
+    color: #333;
+}
+
+.matomo-event-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 10px;
+    color: #666;
+    flex-shrink: 0;
+}
+
+.matomo-event-time {
+    order: 3;
+}
+
+.array-index {
+    color: #6c757d;
+    font-size: 9px;
+    font-weight: normal;
+    margin-left: 4px;
+}
+
+/* =============================================================================
+   TRIGGER BADGES
+   ============================================================================= */
+
+.trigger-badge {
+    font-size: 8px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-weight: bold;
+    white-space: nowrap;
+    order: 2;
+}
+
+.trigger-badge.active {
+    background: #007bff;
+    color: white;
+}
+
+.trigger-badge.debug-off {
+    background: #ffc107;
+    color: #333;
+}
+
+/* =============================================================================
+   EVENT DETAILS
+   ============================================================================= */
+
+.matomo-event-details {
+    margin-top: 4px;
+    border-top: 1px solid #eee;
+    padding-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.matomo-event-details.collapsed {
+    display: none;
+}
+
+.event-details-section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #dee2e6;
+}
+
+.event-details-section h5 {
+    margin: 0 0 6px 0;
+    font-size: 11px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* =============================================================================
+   TRIGGER ANALYSIS SECTION
+   ============================================================================= */
+
+.trigger-analysis-section {
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #e74c3c;
+    font-size: 10px;
+}
+
+.debug-mode-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    padding: 6px 8px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    color: #856404;
+    text-align: center;
+}
+
+.debug-mode-warning strong {
+    color: #b8860b;
+}
+
+.debug-mode-warning code {
+    background: #f8f9fa;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-family: 'Courier New', monospace;
+    font-size: 9px;
+    color: #333;
+}
+
+/* =============================================================================
+   TRIGGERED TRIGGERS AND FIRED TAGS
+   ============================================================================= */
+
+.triggered-triggers,
+.fired-tags {
+    margin-bottom: 8px;
+}
+
+.triggered-triggers h5,
+.fired-tags h5 {
+    margin: 0 0 6px 0;
+    font-size: 10px;
+    color: #333;
+    font-weight: 600;
+    padding: 4px 6px;
+    background: white;
+    border-radius: 3px;
+    border-left: 3px solid #28a745;
+}
+
+.fired-tags h5 {
+    border-left-color: #007bff;
+}
+
+.trigger-item,
+.tag-item {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.trigger-header,
+.tag-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.trigger-header strong {
+    color: #e74c3c;
+    font-size: 10px;
+}
+
+.tag-header strong {
+    color: #007bff;
+    font-size: 10px;
+}
+
+.trigger-type,
+.tag-type {
+    background: #6c757d;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 8px;
+    font-weight: normal;
+}
+
+.tag-blocked {
+    background: #dc3545;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 8px;
+    font-weight: bold;
+}
+
+/* =============================================================================
+   ENHANCED TAG LIST
+   ============================================================================= */
+
+.tag-list {
+    margin-top: 4px;
+}
+
+.tag-entry {
+    background: white;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tag-name {
+    font-weight: 600;
+    color: #007bff;
+    font-size: 10px;
+}
+
+.tag-details {
+    font-size: 8px;
+    color: #666;
+    font-family: 'Courier New', monospace;
+}
+
+/* =============================================================================
+   SIMPLIFIED TAG NAMES LIST (Fallback)
+   ============================================================================= */
+
+.tag-names-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.tag-name-badge {
+    background: #007bff;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 9px;
+    font-weight: 500;
+}
+
+/* =============================================================================
+   TRIGGER CONDITIONS
+   ============================================================================= */
+
+.trigger-conditions {
+    margin-top: 6px;
+}
+
+.condition {
+    font-size: 9px;
+    padding: 3px 6px;
+    margin: 2px 0;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.condition.matched {
+    background: #d4edda;
+    border-left: 3px solid #28a745;
+    color: #155724;
+}
+
+.condition.not-matched {
+    background: #f8d7da;
+    border-left: 3px solid #dc3545;
+    color: #721c24;
+}
+
+.condition-variable {
+    font-weight: bold;
+    color: #333;
+}
+
+.condition-value,
+.condition-expected {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 1px 3px;
+    border-radius: 2px;
+}
+
+.condition-operator {
+    font-weight: bold;
+    color: #666;
+}
+
+.condition-result {
+    margin-left: auto;
+    font-size: 10px;
+}
+
+/* =============================================================================
+   TAG META INFORMATION
+   ============================================================================= */
+
+.tag-meta {
+    font-size: 9px;
+    color: #666;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.tag-trigger,
+.tag-executed,
+.tag-delay {
+    background: #f8f9fa;
+    padding: 1px 4px;
+    border-radius: 2px;
+}
+
+/* =============================================================================
+   NO RESULTS STATE
+   ============================================================================= */
+
+.no-triggers {
+    color: #666;
+    font-style: italic;
+    text-align: center;
+    padding: 12px;
+    background: white;
+    border-radius: 3px;
+    border: 1px dashed #dee2e6;
+}
+
+/* =============================================================================
+   JSON FORMATTER
+   ============================================================================= */
+
+.json-formatter {
+    background: #2d3748;
+    color: #e2e8f0;
+    border: 1px solid #4a5568;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    line-height: 1.3;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.json-string { color: #68d391; }
+.json-number { color: #63b3ed; }
+.json-boolean { color: #f6ad55; }
+.json-null { color: #a0aec0; }
+.json-key { color: #ed8936; font-weight: bold; }
+.json-bracket { color: #e2e8f0; font-weight: bold; }
+.json-colon { color: #e2e8f0; }
+
+/* =============================================================================
+   TOGGLE BUTTONS
+   ============================================================================= */
+
+.matomo-details-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 1px 3px;
+    border-radius: 2px;
+    color: #666;
+    font-size: 10px;
+    transition: background-color 0.2s;
+}
+
+.matomo-details-toggle:hover {
+    background: #e9ecef;
+}
+
+.toggle-icon {
+    font-family: monospace;
+    font-weight: bold;
+}
+
+/* =============================================================================
+   SOURCE BADGES
+   ============================================================================= */
+
+.event-source-badge {
+    font-size: 8px;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.source-dl-live {
+    background: #28a745;
+    color: white;
+}
+
+.source-dl-historical {
+    background: #ffc107;
+    color: #333;
+}
+
+.source-other {
+    background: #6c757d;
+    color: white;
+}
+
+/* =============================================================================
+   CONFIGURATION PANEL
+   ============================================================================= */
+
+.matomo-config-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    background: white;
+    border: 1px solid #e74c3c;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    display: none;
+    z-index: 2147483650;
+    font-size: 11px;
+}
+
+.matomo-config-panel.visible {
+    display: block !important;
+}
+
+.config-section {
+    margin-bottom: 12px;
+}
+
+.config-header {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 12px;
+    margin: -12px -12px 12px -12px;
+    border-radius: 6px 6px 0 0;
+}
+
+.config-header h4 {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.checkbox-item label {
+    font-size: 11px;
+    color: #333;
+    cursor: pointer;
+    flex: 1;
+}
+
+.checkbox-description {
+    font-size: 9px;
+    color: #666;
+    margin-left: 18px;
+    margin-top: 1px;
+}
+
+.config-controls {
+    margin-top: 12px;
+}
+
+.config-controls button {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    width: 100%;
+}
+
+.config-controls button:hover {
+    background: #c0392b;
+}
+
+.help {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    font-size: 10px;
+    color: #666;
+}
+
+.help strong {
+    color: #333;
+}
+
+.version {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 9px;
+    color: #aaa;
+}
+
+/* =============================================================================
+   BUTTON STATES
+   ============================================================================= */
+
+.auto-scroll-btn.active {
+    background: rgba(40, 167, 69, 0.3);
+}
+
+.auto-scroll-btn.paused {
+    background: rgba(255, 193, 7, 0.3);
+}
+
+.mtm-frame-btn.hidden-state {
+    background: rgba(255, 193, 7, 0.3);
+}
+
+/* =============================================================================
+   TAGS AND ADDITIONAL ELEMENTS
+   ============================================================================= */
+
+.matomo-event-tags {
+    margin-top: 4px;
+    font-size: 10px;
+}
+
+.tag-item {
+    background: #007bff;
+    color: white;
+    padding: 1px 3px;
+    border-radius: 2px;
+    margin-right: 3px;
+    font-size: 8px;
+}
+
+.original-name {
+    color: #666;
+    font-weight: normal;
+    font-size: 10px;
+}
+
+/* =============================================================================
+   CONTAINER INFO FOOTER
+   ============================================================================= */
+
+.container-info-footer {
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #e9ecef;
+    border-top: 2px solid #6c757d;
+    border-radius: 0 0 6px 6px;
+}
+
+.container-stats-footer {
+    color: #495057;
+    font-size: 10px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* =============================================================================
+   VIRTUALIZATION INFO
+   ============================================================================= */
+
+.matomo-virtualization-info {
+    padding: 15px;
+    text-align: center;
+    border-top: 2px solid #ffc107;
+    background: #fff9e6;
+}
+
+.virtualization-message {
+    color: #856404;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+@media (max-width: 768px) {
+    #matomo-event-overlay {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-height: 85vh;
+    }
+
+    .matomo-config-panel {
+        width: 250px;
+    }
+
+    .matomo-overlay-controls {
+        gap: 4px;
+    }
+
+    .matomo-overlay-controls button {
+        padding: 3px 5px;
+        font-size: 10px;
+    }
+
+    .trigger-header,
+    .tag-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .condition {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .tag-meta {
+        flex-direction: column;
+        gap: 2px;
+    }
+}

@@ -1,0 +1,71 @@
+<!-- Matomo Tag Manager Event Monitor - Configuration Panel HTML -->
+<div class="config-header">
+    <h4>MTM Events Configuration</h4>
+</div>
+
+<div class="config-section">
+    <div class="checkbox-group">
+        <!-- MTM Array Monitoring -->
+        <div class="checkbox-item">
+            <input type="checkbox" id="watchMTM" class="matomo" checked>
+            <label for="watchMTM" class="matomo">Monitor _mtm Array</label>
+        </div>
+        <div class="checkbox-description">
+            Monitors window._mtm.push() calls and existing entries
+        </div>
+
+        <!-- DataLayer Monitoring -->
+        <div class="checkbox-item">
+            <input type="checkbox" id="watchDataLayer" class="matomo">
+            <label for="watchDataLayer" class="matomo">Monitor dataLayer</label>
+        </div>
+        <div class="checkbox-description">
+            Monitors dataLayer.push() for MTM events (may include timer events)
+        </div>
+
+        <!-- Auto-Show Events Popup -->
+        <div class="checkbox-item">
+            <input type="checkbox" id="autoShow" class="matomo" checked>
+            <label for="autoShow" class="matomo">Auto-show events popup</label>
+        </div>
+        <div class="checkbox-description">
+            Opens events popup automatically when events are detected
+        </div>
+
+        <!-- Console Logging -->
+        <div class="checkbox-item">
+            <input type="checkbox" id="consoleLogging" class="matomo" checked>
+            <label for="consoleLogging" class="matomo">Console logging</label>
+        </div>
+        <div class="checkbox-description">
+            Logs events with triggers and tags to browser console
+        </div>
+
+        <!-- Hide MTM Debug Frame -->
+        <div class="checkbox-item">
+            <input type="checkbox" id="hideMTMFrame" class="matomo">
+            <label for="hideMTMFrame" class="matomo">Hide MTM Debug Frame</label>
+        </div>
+        <div class="checkbox-description">
+            Hides the MTM debug iframe by setting height to 0
+        </div>
+    </div>
+</div>
+
+<div class="config-controls">
+    <button id="applyConfig" class="matomo">Save Configuration & Reload Page</button>
+</div>
+
+<div class="help">
+    <strong>Keyboard Shortcuts:</strong><br>
+    <strong>Ctrl + Alt + M:</strong> Toggle overlay<br>
+    <strong>Ctrl + Alt + T:</strong> Scroll to top<br>
+    <strong>Ctrl + Alt + B:</strong> Scroll to bottom<br><br>
+
+    <strong>Console Filter:</strong><br>
+    Filter on "🏷️ MTM Event" for relevant logs
+</div>
+
+<div class="version">
+    Version 1.3
+</div>

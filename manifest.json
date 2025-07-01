@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Matomo Tag Manager Monitor",
+  "version": "1.3",
+  "description": "Monitor Matomo Tag Manager events, triggers, and tags for debugging purposes",
+
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
+  ],
+
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "injected-script.js",
+        "overlay.html",
+        "config-panel.html",
+        "config-script.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
+  "action": {
+    "default_title": "Toggle MTM Events Overlay"
+  },
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
