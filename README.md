@@ -228,6 +228,7 @@ matomo-tag-manager-monitor/
 ├── config-panel.html          # Configuration panel template
 ├── overlay.css                # Complete styling
 ├── README.md                  # This README file
+├── ext/                       # Extension ZIP File(s)
 └── assets/                    # Extension icons (16, 48, 128px) and Screenshots
 ```
 
