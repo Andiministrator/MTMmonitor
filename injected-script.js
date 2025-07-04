@@ -5,7 +5,7 @@
  * @description Core monitoring script that intercepts _mtm array pushes and dataLayer events
  *              for Matomo Tag Manager debugging. Runs in the main page context to access
  *              window objects directly.
- * @version 1.3
+ * @version 1.4
  * @author MTM Event Monitor
  */
 (function() {
@@ -1366,6 +1366,18 @@
     }
 
     /**
+     * Adds container information to event data (immediate version)
+     * @param {Object} eventData - Event data to enhance
+     */
+     function addContainerInfo(eventData) {
+         const containerInfo = getMTMContainerInfo();
+         if (containerInfo.length > 0) {
+             eventData.containerInfo = containerInfo;
+             debugLog('Container info added to event:', containerInfo);
+         }
+     }
+
+    /**
      * Analyzes MTM DataLayer event with custom timestamp
      * @param {Object} data - DataLayer event data
      * @param {number} timestamp - Custom timestamp
@@ -1427,6 +1439,72 @@
     // =============================================================================
     // CONFIGURATION AND INITIALIZATION
     // =============================================================================
+
+    /**
+     * Automatically enables MTM Debug Mode if available
+     */
+     function autoEnableMTMDebugMode() {
+         debugLog('Attempting to auto-enable MTM Debug Mode...');
+
+         const enableDebugMode = () => {
+             if (typeof window.MatomoTagManager !== 'undefined' &&
+                 typeof window.MatomoTagManager.enableDebugMode === 'function') {
+
+                 try {
+                     window.MatomoTagManager.enableDebugMode();
+                     debugLog('MTM Debug Mode automatically enabled');
+
+                     // Dispatch event to notify content script
+                     const event = new CustomEvent('mtmDebugModeEnabled', {
+                         detail: { success: true },
+                         bubbles: true
+                     });
+                     document.dispatchEvent(event);
+
+                     return true;
+                 } catch (error) {
+                     debugLog('Error enabling MTM Debug Mode:', error);
+
+                     // Dispatch error event
+                     const event = new CustomEvent('mtmDebugModeEnabled', {
+                         detail: { success: false, error: error.message },
+                         bubbles: true
+                     });
+                     document.dispatchEvent(event);
+
+                     return false;
+                 }
+             }
+             return false;
+         };
+
+         // Try immediately
+         if (enableDebugMode()) {
+             return;
+         }
+
+         // If not available, wait and retry
+         let attempts = 0;
+         const maxAttempts = 20; // 10 seconds max
+
+         const checkInterval = setInterval(() => {
+             attempts++;
+
+             if (enableDebugMode() || attempts >= maxAttempts) {
+                 clearInterval(checkInterval);
+                 if (attempts >= maxAttempts) {
+                     debugLog('MTM Debug Mode auto-enable: Max attempts reached, MTM might not be available');
+
+                     // Dispatch timeout event
+                     const event = new CustomEvent('mtmDebugModeEnabled', {
+                         detail: { success: false, error: 'timeout' },
+                         bubbles: true
+                     });
+                     document.dispatchEvent(event);
+                 }
+             }
+         }, 500);
+     }
 
     /**
      * Handles configuration updates
@@ -1491,6 +1569,9 @@
      */
     function init() {
         debugLog('Initializing Matomo Tag Manager Event Monitor...');
+
+        // Auto-enable debug mode
+        autoEnableMTMDebugMode();
 
         // Monitor existing arrays immediately
         monitorExistingArrays();

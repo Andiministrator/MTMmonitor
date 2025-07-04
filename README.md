@@ -2,7 +2,7 @@
 
 A Chrome extension for debugging and monitoring Matomo Tag Manager (MTM) events, triggers, and tags in real-time.
 
-**Chrome Extension** | **Version 1.3** | **Apache 2.0 License**
+**Chrome Extension** | **Version 1.4** | **Apache 2.0 License**
 
 ## What is it for? - General Information
 The MTM Event Monitor helps you debug and analyze your Matomo Tag Manager implementation by providing real-time insights into event firing, trigger conditions, and tag execution.
@@ -326,6 +326,10 @@ Feel free to contact me if you found problems or improvements:
 ---
 
 ## Changelog
+
+- Version 1.4, *04.07.2025*
+  - Some Bug Fixes
+  - Extension should now run for MTM with disabled Debug Mode
 
 - Version 1.3, *01.07.2025*
   - First official and Public version

@@ -4,7 +4,7 @@
  *
  * @description Lightweight bridge script that receives configuration from content script
  *              and loads the main injected script with proper configuration in page context
- * @version 1.3
+ * @version 1.4
  * @author MTM Event Monitor
  */
 (function() {
@@ -19,20 +19,80 @@
      * @param {string} scriptUrl - URL of the script to load
      * @param {Object} config - Configuration object
      */
-    function loadMainScript(scriptUrl, config) {
-        const mainScript = document.createElement('script');
-        mainScript.src = scriptUrl;
+     function loadMainScript(scriptUrl, config) {
+         try {
+             // Check if we're on a restricted site
+             const restrictedDomains = [
+                 'accounts.google.com',
+                 'meet.google.com',
+                 'chrome.google.com',
+                 'chromewebstore.google.com'
+             ];
 
-        mainScript.onload = function() {
-            this.remove();
-        };
+             const currentDomain = window.location.hostname;
+             if (restrictedDomains.some(domain => currentDomain.includes(domain))) {
+                 console.log('MTM Monitor: Skipping injection on restricted domain:', currentDomain);
+                 return;
+             }
 
-        mainScript.onerror = function() {
-            this.remove();
-        };
+             const mainScript = document.createElement('script');
 
-        (document.head || document.documentElement).appendChild(mainScript);
-    }
+             // Handle Trusted Types CSP if present
+             if (window.trustedTypes && window.trustedTypes.createPolicy) {
+                 try {
+                     // Try to create a policy for our script URLs
+                     let policy;
+                     try {
+                         policy = window.trustedTypes.createPolicy('mtm-monitor-script', {
+                             createScriptURL: (url) => {
+                                 // Only allow our extension URLs
+                                 if (url.startsWith('chrome-extension://')) {
+                                     return url;
+                                 }
+                                 throw new Error('Invalid script URL');
+                             }
+                         });
+                     } catch (policyError) {
+                         // Policy might already exist, try to get it
+                         policy = window.trustedTypes.getPolicyByName('mtm-monitor-script');
+                         if (!policy) {
+                             throw policyError;
+                         }
+                     }
+
+                     mainScript.src = policy.createScriptURL(scriptUrl);
+                 } catch (trustedTypesError) {
+                     console.log('MTM Monitor: Cannot inject due to Trusted Types CSP:', trustedTypesError.message);
+                     return;
+                 }
+             } else {
+                 // Standard assignment for sites without Trusted Types
+                 mainScript.src = scriptUrl;
+             }
+
+             // Set up event handlers
+             mainScript.onload = function() {
+                 console.log('MTM Monitor: Injected script loaded successfully');
+                 this.remove();
+             };
+
+             mainScript.onerror = function(error) {
+                 console.log('MTM Monitor: Script injection failed:', error);
+                 this.remove();
+             };
+
+             // Inject the script
+             const target = document.head || document.documentElement;
+             if (target) {
+                 target.appendChild(mainScript);
+             } else {
+                 console.log('MTM Monitor: Cannot find injection target (head/documentElement)');
+             }
+
+         } catch (error) {
+             console.log('MTM Monitor: Script injection blocked by CSP or other security policy:', error.message);
+         }
+     }
 
     // =============================================================================
     // EVENT LISTENERS

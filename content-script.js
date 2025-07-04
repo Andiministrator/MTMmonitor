@@ -5,7 +5,7 @@
  * @description Content script running in isolated context that handles communication
  *              between injected script and extension popup, manages event collection,
  *              and provides UI overlay for MTM event debugging
- * @version 1.3
+ * @version 1.4
  * @author MTM Event Monitor
  */
 
@@ -1329,13 +1329,114 @@ document.addEventListener('keydown', function(e) {
 // =============================================================================
 
 /**
+ * Checks for MTM presence on the page
+ * @returns {boolean} True if MTM is detected
+ */
+ function checkForMTMInDOM() {
+     // Check for MTM script tags
+     const mtmScripts = document.querySelectorAll([
+         'script[src*="mtm.js"]',
+         'script[src*="matomo.js"]',
+         'script[src*="container"]',
+         'script[src*="mtm/"]'
+     ].join(', '));
+
+     if (mtmScripts.length > 0) {
+         console.log('MTM Monitor: MTM script detected in DOM');
+         return true;
+     }
+
+     // Check for inline scripts containing MTM
+     const inlineScripts = document.querySelectorAll('script:not([src])');
+     for (const script of inlineScripts) {
+         if (script.textContent && (
+             script.textContent.includes('MatomoTagManager') ||
+             script.textContent.includes('_mtm.push') ||
+             script.textContent.includes('mtm.js')
+         )) {
+             console.log('MTM Monitor: MTM code detected in inline script');
+             return true;
+         }
+     }
+
+     // Check for MTM-related attributes
+     const mtmElements = document.querySelectorAll([
+         '[data-mtm]',
+         '[data-matomo]',
+         '#mtm'
+     ].join(', '));
+
+     if (mtmElements.length > 0) {
+         console.log('MTM Monitor: MTM elements detected in DOM');
+         return true;
+     }
+
+     // Check for MTM-related meta tags
+     const mtmMeta = document.querySelectorAll([
+         'meta[name*="matomo"]',
+         'meta[name*="mtm"]'
+     ].join(', '));
+
+     if (mtmMeta.length > 0) {
+         console.log('MTM Monitor: MTM meta tags detected');
+         return true;
+     }
+
+     return false;
+ }
+
+/**
  * Initializes the content script
  */
-function initializeContentScript() {
+ function initializeContentScript() {
+     console.log('MTM Monitor: Starting initialization...');
+
+     // Check if we're on a known problematic domain
+     const restrictedDomains = [
+         'accounts.google.com',
+         'meet.google.com',
+         'chrome.google.com',
+         'chromewebstore.google.com',
+         'chrome:///',
+         'moz-extension:///',
+         'edge://'
+     ];
+
+     const currentDomain = window.location.hostname;
+     const currentProtocol = window.location.protocol;
+
+     // Skip extension pages and known problematic domains
+     if (currentProtocol.startsWith('chrome') ||
+         currentProtocol.startsWith('moz') ||
+         currentProtocol.startsWith('edge') ||
+         restrictedDomains.some(domain => currentDomain.includes(domain))) {
+
+         console.log('MTM Monitor: Skipping injection on restricted domain/protocol:', currentDomain);
+         return;
+     }
+
+     // For immediate DOM-based detection
+     const domBasedDetection = checkForMTMInDOM();
+
+     if (domBasedDetection) {
+         console.log('MTM Monitor: MTM detected via DOM analysis, proceeding with injection');
+         proceedWithInjection();
+     } else {
+         // Try runtime detection with delayed injection
+         console.log('MTM Monitor: No MTM found in DOM, trying runtime detection...');
+         tryRuntimeDetection();
+     }
+ }
+
+/**
+ * Proceeds with extension injection
+ */
+function proceedWithInjection() {
     chrome.storage.sync.get(DEFAULT_CONFIG, function(config) {
         // Load configuration script first
         const configScript = document.createElement('script');
         configScript.src = chrome.runtime.getURL('config-script.js');
+
         configScript.onload = function() {
             this.remove();
 
@@ -1349,7 +1450,9 @@ function initializeContentScript() {
             });
             document.dispatchEvent(event);
         };
+
         configScript.onerror = function() {
+            console.log('MTM Monitor: Failed to load config script');
             this.remove();
         };
 
@@ -1362,6 +1465,36 @@ function initializeContentScript() {
             setupMTMFrameHiding(true);
         }
     });
+}
+
+/**
+ * Tries runtime detection with delayed injection
+ */
+function tryRuntimeDetection() {
+    console.log('MTM Monitor: Attempting delayed MTM detection...');
+
+    // Wait a bit for dynamic scripts to load
+    setTimeout(() => {
+        if (checkForMTMInDOM()) {
+            console.log('MTM Monitor: MTM detected after delay, proceeding with injection');
+            proceedWithInjection();
+        } else {
+            console.log('MTM Monitor: No MTM detected on this page, extension will remain dormant');
+            // Extension remains loaded but dormant - can still be activated manually
+        }
+    }, 2000);
+
+    // Also try again after page fully loads
+    if (document.readyState !== 'complete') {
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (checkForMTMInDOM() && !window.matomoMonitorLoaded) {
+                    console.log('MTM Monitor: MTM detected after page load, proceeding with injection');
+                    proceedWithInjection();
+                }
+            }, 1000);
+        });
+    }
 }
 
 // =============================================================================

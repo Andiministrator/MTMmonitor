@@ -4,7 +4,7 @@
  *
  * @description Background service worker for Chrome extension that manages
  *              badge counters and handles extension icon clicks to toggle overlay
- * @version 1.3
+ * @version 1.4
  * @author MTM Event Monitor
  */
 
